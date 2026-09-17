@@ -12,7 +12,9 @@ const games = [
   { id: 'paper-planes', title: 'Paper Planes', type: 'quick', meta: 'ARCADE / 05 MIN', symbol: '➤' },
   { id: 'moss', title: 'Moss', type: 'chill', meta: 'EXPLORATION / 15 MIN', symbol: '✣' },
   { id: 'gridlock', title: 'Gridlock', type: 'challenge', meta: 'LOGIC / 11 MIN', symbol: '▦' },
-  { id: 'pong-again', title: 'Pong Again', type: 'quick', meta: 'ARCADE / 02 MIN', symbol: '│' }
+  { id: 'pong-again', title: 'Pong Again', type: 'quick', meta: 'ARCADE / 02 MIN', symbol: '│' },
+  { id: 'retro-bowl', title: 'Retro Bowl', type: 'sports', meta: 'AMERICAN FOOTBALL / 10 MIN', symbol: '🏈', url: 'https://retro-bowl-unbl0cked.github.io/' },
+  { id: 'subway-surfers', title: 'Subway Surfers', type: 'runner', meta: 'ENDLESS RUNNER / 05 MIN', symbol: '🚇', url: 'https://subwaysurfers76.github.io/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
@@ -23,8 +25,8 @@ const filterTabs = document.querySelector('#filterTabs');
 const toast = document.querySelector('#toast');
 let activeFilter = 'all';
 
-const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[character]));
 
 const labelForType = (type) => type.replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -76,7 +78,7 @@ function showToast(message, duration = 2200) {
 
 function launchGame(game) {
   if (game.url) {
-    window.open(game.url, game.url.startsWith('#') ? '_self' : '_blank', 'noopener');
+    window.open(game.url, '_blank', 'noopener');
     return;
   }
   showToast(`${game.title} is warming up...`);
