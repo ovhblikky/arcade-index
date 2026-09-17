@@ -42,15 +42,10 @@
     <section class="catalogue" id="games" aria-labelledby="catalogue-title">
       <div class="section-heading">
         <div><p class="eyebrow">THE INDEX</p><h2 id="catalogue-title">Games for every mood</h2></div>
-        <p class="count" id="gameCount">08 / 24 GAMES</p>
+        <p class="count" id="gameCount" aria-live="polite"></p>
       </div>
       <div class="toolbar">
-        <div class="filter-tabs" role="tablist" aria-label="Filter games">
-          <button class="filter active" data-filter="all" role="tab" aria-selected="true">All games</button>
-          <button class="filter" data-filter="quick" role="tab" aria-selected="false">Quick play</button>
-          <button class="filter" data-filter="chill" role="tab" aria-selected="false">Chill</button>
-          <button class="filter" data-filter="challenge" role="tab" aria-selected="false">Challenge</button>
-        </div>
+        <div class="filter-tabs" id="filterTabs" role="tablist" aria-label="Filter games"></div>
         <label class="search-wrap"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Search games..." aria-label="Search games"></label>
       </div>
       <div class="game-grid" id="gameGrid"></div>
