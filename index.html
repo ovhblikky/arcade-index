@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Arcade Index, a curated home for quick, clever games." />
+  <title>Arcade Index — Find your next game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Arcade Index home"><span class="brand-mark">✳</span><span>ARCADE<br>INDEX</span></a>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a class="active" href="#games">Browse</a>
+      <a href="#collections">Collections</a>
+      <a href="#about">About</a>
+    </nav>
+    <div class="header-actions">
+      <span class="status-dot"></span><span class="status-label">12 players online</span>
+      <button class="icon-button" id="randomButton" title="Pick a random game" aria-label="Pick a random game">↯</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">EST. 2024 / OPEN ALL DAY</p>
+        <h1 id="hero-title">Find a game.<br><em>Lose an hour.</em></h1>
+        <p class="hero-description">A carefully assembled shelf of quick hits, deep dives, and strange little worlds for every kind of player.</p>
+        <a class="text-link" href="#games">Explore the index <span>↓</span></a>
+      </div>
+      <div class="hero-art" aria-label="Abstract arcade illustration">
+        <div class="art-label">FEATURED<br>DROP / 004</div>
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="arcade-shape">✦</div><div class="art-caption">THE<br>GOOD<br>STUFF</div>
+      </div>
+    </section>
+
+    <section class="catalogue" id="games" aria-labelledby="catalogue-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">THE INDEX</p><h2 id="catalogue-title">Games for every mood</h2></div>
+        <p class="count" id="gameCount">08 / 24 GAMES</p>
+      </div>
+      <div class="toolbar">
+        <div class="filter-tabs" role="tablist" aria-label="Filter games">
+          <button class="filter active" data-filter="all" role="tab" aria-selected="true">All games</button>
+          <button class="filter" data-filter="quick" role="tab" aria-selected="false">Quick play</button>
+          <button class="filter" data-filter="chill" role="tab" aria-selected="false">Chill</button>
+          <button class="filter" data-filter="challenge" role="tab" aria-selected="false">Challenge</button>
+        </div>
+        <label class="search-wrap"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Search games..." aria-label="Search games"></label>
+      </div>
+      <div class="game-grid" id="gameGrid"></div>
+      <p class="empty-state" id="emptyState" hidden>No games match that search. Try another corner of the arcade.</p>
+    </section>
+
+    <section class="collections" id="collections" aria-labelledby="collections-title">
+      <div class="section-heading compact"><div><p class="eyebrow">CURATED SHELVES</p><h2 id="collections-title">Pick a lane</h2></div><a class="text-link" href="#games">View all <span>→</span></a></div>
+      <div class="shelf-grid">
+        <a class="shelf shelf-red" href="#games"><span class="shelf-number">01</span><strong>Five minute<br>fix</strong><span class="shelf-arrow">↗</span><small>SHORT / SWEET / DONE</small></a>
+        <a class="shelf shelf-blue" href="#games"><span class="shelf-number">02</span><strong>Strange<br>and lovely</strong><span class="shelf-arrow">↗</span><small>ODD / QUIET / MEMORABLE</small></a>
+        <a class="shelf shelf-yellow" href="#games"><span class="shelf-number">03</span><strong>Brain<br>burners</strong><span class="shelf-arrow">↗</span><small>SHARP / FOCUSED / ONE MORE</small></a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="about"><div class="footer-brand">✳ ARCADE INDEX</div><p>Good games, no gatekeeping.<br>Made for curious people.</p><span class="footer-note">© 2024–2026 / KEEP PLAYING</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
