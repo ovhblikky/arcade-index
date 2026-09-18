@@ -42,11 +42,14 @@ function addGameModal() {
     .game-modal.is-open { opacity: 1; visibility: visible; }
     .game-modal-panel { width: min(1100px, 100%); height: min(760px, 92vh); display: flex; flex-direction: column; background: var(--paper); box-shadow: 8px 8px 0 var(--ink); transform: translateY(14px); transition: transform .2s ease; }
     .game-modal.is-open .game-modal-panel { transform: none; }
+    .game-modal-panel:fullscreen { width: 100vw; height: 100vh; box-shadow: none; }
     .game-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; padding: 10px 16px 10px 20px; border-bottom: 1px solid var(--line); }
+    .game-modal-actions { display: flex; align-items: center; gap: 8px; }
     .game-modal-title { margin: 0; font-size: 16px; font-weight: 500; }
     .game-modal-meta { margin: 4px 0 0; color: var(--muted); font: 10px var(--mono); }
-    .game-modal-close { width: 34px; height: 34px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-size: 22px; line-height: 1; }
-    .game-modal-close:hover, .game-modal-close:focus-visible { background: var(--ink); color: var(--paper); }
+    .game-modal-fullscreen, .game-modal-close { width: 34px; height: 34px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-size: 16px; line-height: 1; }
+    .game-modal-close { font-size: 22px; }
+    .game-modal-fullscreen:hover, .game-modal-fullscreen:focus-visible, .game-modal-close:hover, .game-modal-close:focus-visible { background: var(--ink); color: var(--paper); }
     .game-modal-frame { flex: 1; width: 100%; min-height: 0; border: 0; background: #fff; }
     @media (max-width: 600px) { .game-modal { padding: 10px; } .game-modal-panel { height: 94vh; box-shadow: 4px 4px 0 var(--ink); } }
   `;
@@ -61,7 +64,10 @@ function addGameModal() {
     <div class="game-modal-panel" role="document">
       <header class="game-modal-header">
         <div><h2 class="game-modal-title" id="gameModalTitle"></h2><p class="game-modal-meta" id="gameModalMeta"></p></div>
-        <button class="game-modal-close" type="button" aria-label="Close game">×</button>
+        <div class="game-modal-actions">
+          <button class="game-modal-fullscreen" type="button" aria-label="Enter full screen" title="Enter full screen">⛶</button>
+          <button class="game-modal-close" type="button" aria-label="Close game">×</button>
+        </div>
       </header>
       <iframe class="game-modal-frame" id="gameModalFrame" title="Game" allow="fullscreen; gamepad" referrerpolicy="no-referrer"></iframe>
     </div>`;
@@ -70,12 +76,36 @@ function addGameModal() {
 }
 
 const gameModal = addGameModal();
+const gamePanel = gameModal.querySelector('.game-modal-panel');
 const gameFrame = gameModal.querySelector('#gameModalFrame');
 const gameModalTitle = gameModal.querySelector('#gameModalTitle');
 const gameModalMeta = gameModal.querySelector('#gameModalMeta');
+const fullscreenGameButton = gameModal.querySelector('.game-modal-fullscreen');
 const closeGameButton = gameModal.querySelector('.game-modal-close');
 
+function updateFullscreenButton() {
+  const isFullscreen = document.fullscreenElement === gamePanel;
+  fullscreenGameButton.textContent = isFullscreen ? '⛶' : '⛶';
+  fullscreenGameButton.title = isFullscreen ? 'Exit full screen' : 'Enter full screen';
+  fullscreenGameButton.setAttribute('aria-label', isFullscreen ? 'Exit full screen' : 'Enter full screen');
+}
+
+async function toggleGameFullscreen() {
+  try {
+    if (document.fullscreenElement === gamePanel) {
+      await document.exitFullscreen();
+    } else if (gamePanel.requestFullscreen) {
+      await gamePanel.requestFullscreen();
+    } else {
+      showToast('Full screen is not supported in this browser.');
+    }
+  } catch {
+    showToast('Full screen was blocked by the browser.');
+  }
+}
+
 function closeGame() {
+  if (document.fullscreenElement === gamePanel) document.exitFullscreen().catch(() => {});
   gameModal.classList.remove('is-open');
   gameModal.setAttribute('aria-hidden', 'true');
   gameFrame.src = 'about:blank';
@@ -91,14 +121,17 @@ function openGame(game) {
   gameModal.classList.add('is-open');
   gameModal.removeAttribute('aria-hidden');
   closeGameButton.focus();
+  updateFullscreenButton();
 }
 
+fullscreenGameButton.addEventListener('click', toggleGameFullscreen);
+document.addEventListener('fullscreenchange', updateFullscreenButton);
 closeGameButton.addEventListener('click', closeGame);
 gameModal.addEventListener('click', (event) => {
   if (event.target === gameModal) closeGame();
 });
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && gameModal.classList.contains('is-open')) closeGame();
+  if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame();
 });
 
 function renderFilters() {
