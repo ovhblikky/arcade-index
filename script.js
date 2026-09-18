@@ -18,7 +18,8 @@ const games = [
   { id: 'moto-x3m', title: 'Moto X3M', type: 'racing', meta: 'BIKE / 10 MIN', symbol: '🏍️', url: 'https://moto-x3mgame.github.io/a8/moto-x3m/' },
   { id: 'slow-roads', title: 'Slow Roads', type: 'chill', meta: 'DRIVING / 20 MIN', symbol: '〰', url: 'https://slowroads.io/' },
   { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' },
-  { id: 'eaglercraft', title: 'Eaglercraft', type: 'sandbox', meta: 'BUILDING / LONG PLAY', symbol: '▣', url: 'https://eaglercraftnew-mc.vercel.app/' }
+  { id: 'eaglercraft', title: 'Eaglercraft', type: 'sandbox', meta: 'BUILDING / LONG PLAY', symbol: '▣', url: 'https://eaglercraftnew-mc.vercel.app/' },
+  { id: 'wordle-daily', title: 'Wordle', type: 'word', meta: 'DAILY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' }
 ];
 
 const grid = document.querySelector('#gameGrid');
