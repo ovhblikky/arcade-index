@@ -23,7 +23,8 @@ const games = [
   { id: 'flappy-bird', title: 'Flappy Bird', type: 'quick', meta: 'ARCADE / 03 MIN', symbol: '🐦', url: 'https://flappybirdonline.gitlab.io/file/' },
   { id: 'solitairey', title: 'Solitairey', type: 'chill', meta: 'CARD GAME / 15 MIN', symbol: '♠', url: 'https://foss-card-games.github.io/Solitairey/' },
   { id: 'neal-fun', title: "That's Not My Neighbor", type: 'challenge', meta: 'HORROR / 15 MIN', symbol: '🚪', url: 'https://thatsnotmyneighbor.online/v11/' },
-  { id: 'granny', title: 'Granny', type: 'challenge', meta: 'HORROR / 10 MIN', symbol: '👵', url: 'https://db.duckmath.org/html/granny/' }
+  { id: 'granny', title: 'Granny', type: 'challenge', meta: 'HORROR / 10 MIN', symbol: '👵', url: 'https://db.duckmath.org/html/granny/' },
+  { id: 'ultrakill-prelude', title: 'Ultrakill Prelude', type: 'challenge', meta: 'SHOOTER / 12 MIN', symbol: '☠', url: 'https://html-classic.itch.zone/html/18282996/index.html?v=1783718205' }
 ];
 
 const grid = document.querySelector('#gameGrid');
@@ -104,11 +105,22 @@ function addSuggestion(event) {
 
 function addGameModal() {
   const style = document.createElement('style');
-  style.textContent = `.game-modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 24px; background: rgba(23,23,23,.78); opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s ease; }.game-modal.is-open { opacity: 1; visibility: visible; }.game-modal-panel { width: min(1100px, 100%); height: min(760px, 92vh); display: flex; flex-direction: column; background: var(--paper); box-shadow: 8px 8px 0 var(--ink); transform: translateY(14px); transition: transform .2s ease; }.game-modal.is-open .game-modal-panel { transform: none; }.game-modal-panel:fullscreen { width: 100vw; height: 100vh; box-shadow: none; }.game-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; padding: 10px 16px 10px 20px; border-bottom: 1px solid var(--line); }.game-modal-actions { display: flex; align-items: center; gap: 8px; }.game-modal-title { margin: 0; font-size: 16px; font-weight: 500; }.game-modal-meta { margin: 4px 0 0; color: var(--muted); font: 10px var(--mono); }.game-modal-fullscreen, .game-modal-close { width: 34px; height: 34px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-size: 16px; line-height: 1; }.game-modal-close { font-size: 22px; }.game-modal-fullscreen:hover, .game-modal-fullscreen:focus-visible, .game-modal-close:hover, .game-modal-close:focus-visible { background: var(--ink); color: var(--paper); }.game-modal-frame { flex: 1; width: 100%; min-height: 0; border: 0; background: #fff; }@media (max-width: 600px) { .game-modal { padding: 10px; } .game-modal-panel { height: 94vh; box-shadow: 4px 4px 0 var(--ink); } }`;
+  style.textContent = `.game-modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 24px; background: rgba(23,23,23,.78); opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s ease; }
+  .game-modal.is-open { opacity: 1; visibility: visible; }
+  .game-modal-panel { position: relative; width: min(100%, 1100px); height: min(78vh, 760px); border-radius: 20px; background: #101010; border: 1px solid rgba(255,255,255,.1); box-shadow: 0 24px 60px rgba(0,0,0,.5); overflow: hidden; }
+  .game-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.02); }
+  .game-modal-title { margin: 0; font-size: clamp(1.1rem, 2vw, 1.7rem); }
+  .game-modal-meta { margin: 4px 0 0; color: #b9b9b9; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
+  .game-modal-actions { display: flex; align-items: center; gap: 8px; }
+  .game-modal-button { border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); color: #fff; border-radius: 999px; height: 36px; width: 36px; display: grid; place-items: center; cursor: pointer; }
+  .game-modal-button:hover { background: rgba(255,255,255,.08); }
+  .game-modal-frame { display: block; width: 100%; height: calc(100% - 74px); border: 0; background: #000; }
+  @media (max-width: 640px) { .game-modal-panel { height: 70vh; } .game-modal-header { padding: 12px 14px; } }
+  `;
   document.head.append(style);
   const modal = document.createElement('div');
   modal.className = 'game-modal'; modal.id = 'gameModal'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'gameModalTitle');
-  modal.innerHTML = `<div class="game-modal-panel" role="document"><header class="game-modal-header"><div><h2 class="game-modal-title" id="gameModalTitle"></h2><p class="game-modal-meta" id="gameModalMeta"></p></div><div class="game-modal-actions"><button class="game-modal-fullscreen" type="button" aria-label="Enter full screen" title="Enter full screen">⛶</button><button class="game-modal-close" type="button" aria-label="Close game">×</button></div></header><iframe class="game-modal-frame" id="gameModalFrame" title="Game" allow="fullscreen; gamepad" referrerpolicy="no-referrer"></iframe></div>`;
+  modal.innerHTML = `<div class="game-modal-panel" role="document"><header class="game-modal-header"><div><h2 class="game-modal-title" id="gameModalTitle"></h2><p class="game-modal-meta" id="gameModalMeta"></p></div><div class="game-modal-actions"><button class="game-modal-button game-modal-fullscreen" type="button" aria-label="Enter full screen" title="Enter full screen">⤢</button><button class="game-modal-button game-modal-close" type="button" aria-label="Close game" title="Close game">✕</button></div></header><iframe id="gameModalFrame" class="game-modal-frame" loading="lazy" title="Game window"></iframe></div>`;
   document.body.append(modal); return modal;
 }
 const gameModal = addGameModal();
