@@ -26,7 +26,8 @@ const games = [
   { id: 'granny', title: 'Granny', type: 'challenge', meta: 'HORROR / 10 MIN', symbol: '👵', url: 'https://db.duckmath.org/html/granny/' },
   { id: 'ultrakill-prelude', title: 'Ultrakill Prelude', type: 'challenge', meta: 'SHOOTER / 12 MIN', symbol: '☠', url: 'https://html5.gdata1.com/ULTRAKILL%20Prelude/?v=20250827221755' },
   { id: 'house-of-hazards', title: 'House of Hazards', type: 'challenge', meta: 'PARTY / 10 MIN', symbol: '🏠', url: 'https://houseofhazards.com/' },
-  { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' }
+  { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' },
+  { id: 'mortal-kombat-trilogy', title: 'Mortal Kombat Trilogy', type: 'fighting', meta: 'FIGHTING / 15 MIN', symbol: '⚔', url: 'https://classicjoy.games/embed?slug=mortal-kombat-trilogy&internal=1' }
 ];
 
 const grid = document.querySelector('#gameGrid');
