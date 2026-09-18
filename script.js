@@ -17,7 +17,8 @@ const games = [
   { id: 'subway-surfers', title: 'Subway Surfers', type: 'runner', meta: 'ENDLESS RUNNER / 05 MIN', symbol: '🚇', url: 'https://files.gamezhero.com/game/905/1d1/9051d1173be765fb/data/index.html' },
   { id: 'moto-x3m', title: 'Moto X3M', type: 'racing', meta: 'BIKE / 10 MIN', symbol: '🏍️', url: 'https://moto-x3mgame.github.io/a8/moto-x3m/' },
   { id: 'slow-roads', title: 'Slow Roads', type: 'chill', meta: 'DRIVING / 20 MIN', symbol: '〰', url: 'https://slowroads.io/' },
-  { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' }
+  { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' },
+  { id: 'eaglercraft', title: 'Eaglercraft', type: 'sandbox', meta: 'BUILDING / LONG PLAY', symbol: '▣', url: 'https://eaglercraftnew-mc.vercel.app/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
