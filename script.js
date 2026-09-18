@@ -20,7 +20,8 @@ const games = [
   { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' },
   { id: 'eaglercraft', title: 'Eaglercraft', type: 'sandbox', meta: 'BUILDING / LONG PLAY', symbol: '▣', url: 'https://eaglercraftnew-mc.vercel.app/' },
   { id: 'wordle-daily', title: 'Wordle', type: 'word', meta: 'DAILY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' },
-  { id: 'flappy-bird', title: 'Flappy Bird', type: 'quick', meta: 'ARCADE / 03 MIN', symbol: '🐦', url: 'https://flappybirdonline.gitlab.io/file/' }
+  { id: 'flappy-bird', title: 'Flappy Bird', type: 'quick', meta: 'ARCADE / 03 MIN', symbol: '🐦', url: 'https://flappybirdonline.gitlab.io/file/' },
+  { id: 'solitairey', title: 'Solitairey', type: 'chill', meta: 'CARD GAME / 15 MIN', symbol: '♠', url: 'https://foss-card-games.github.io/Solitairey/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
@@ -32,10 +33,7 @@ const toast = document.querySelector('#toast');
 let activeFilter = 'all';
 let previouslyFocused;
 
-const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-}[character]));
-
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const labelForType = (type) => type.replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 
 function addGameModal() {
@@ -63,17 +61,7 @@ function addGameModal() {
   modal.setAttribute('role', 'dialog');
   modal.setAttribute('aria-modal', 'true');
   modal.setAttribute('aria-labelledby', 'gameModalTitle');
-  modal.innerHTML = `
-    <div class="game-modal-panel" role="document">
-      <header class="game-modal-header">
-        <div><h2 class="game-modal-title" id="gameModalTitle"></h2><p class="game-modal-meta" id="gameModalMeta"></p></div>
-        <div class="game-modal-actions">
-          <button class="game-modal-fullscreen" type="button" aria-label="Enter full screen" title="Enter full screen">⛶</button>
-          <button class="game-modal-close" type="button" aria-label="Close game">×</button>
-        </div>
-      </header>
-      <iframe class="game-modal-frame" id="gameModalFrame" title="Game" allow="fullscreen; gamepad" referrerpolicy="no-referrer"></iframe>
-    </div>`;
+  modal.innerHTML = `<div class="game-modal-panel" role="document"><header class="game-modal-header"><div><h2 class="game-modal-title" id="gameModalTitle"></h2><p class="game-modal-meta" id="gameModalMeta"></p></div><div class="game-modal-actions"><button class="game-modal-fullscreen" type="button" aria-label="Enter full screen" title="Enter full screen">⛶</button><button class="game-modal-close" type="button" aria-label="Close game">×</button></div></header><iframe class="game-modal-frame" id="gameModalFrame" title="Game" allow="fullscreen; gamepad" referrerpolicy="no-referrer"></iframe></div>`;
   document.body.append(modal);
   return modal;
 }
@@ -97,9 +85,7 @@ async function toggleGameFullscreen() {
     if (document.fullscreenElement === gamePanel) await document.exitFullscreen();
     else if (gamePanel.requestFullscreen) await gamePanel.requestFullscreen();
     else showToast('Full screen is not supported in this browser.');
-  } catch {
-    showToast('Full screen was blocked by the browser.');
-  }
+  } catch { showToast('Full screen was blocked by the browser.'); }
 }
 
 function closeGame() {
@@ -125,47 +111,25 @@ function openGame(game) {
 fullscreenGameButton.addEventListener('click', toggleGameFullscreen);
 document.addEventListener('fullscreenchange', updateFullscreenButton);
 closeGameButton.addEventListener('click', closeGame);
-gameModal.addEventListener('click', (event) => {
-  if (event.target === gameModal) closeGame();
-});
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame();
-});
+gameModal.addEventListener('click', (event) => { if (event.target === gameModal) closeGame(); });
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame(); });
 
 function renderFilters() {
   const types = [...new Set(games.map((game) => game.type).filter(Boolean))];
   const filters = ['all', ...types];
   if (!filters.includes(activeFilter)) activeFilter = 'all';
-  filterTabs.innerHTML = filters.map((type) => `
-    <button class="filter${type === activeFilter ? ' active' : ''}" data-filter="${escapeHtml(type)}" role="tab" aria-selected="${type === activeFilter}">
-      ${type === 'all' ? 'All games' : escapeHtml(labelForType(type))}
-    </button>
-  `).join('');
-  filterTabs.querySelectorAll('.filter').forEach((button) => {
-    button.addEventListener('click', () => {
-      activeFilter = button.dataset.filter;
-      renderFilters();
-      renderGames();
-    });
-  });
+  filterTabs.innerHTML = filters.map((type) => `<button class="filter${type === activeFilter ? ' active' : ''}" data-filter="${escapeHtml(type)}" role="tab" aria-selected="${type === activeFilter}">${type === 'all' ? 'All games' : escapeHtml(labelForType(type))}</button>`).join('');
+  filterTabs.querySelectorAll('.filter').forEach((button) => button.addEventListener('click', () => { activeFilter = button.dataset.filter; renderFilters(); renderGames(); }));
 }
 
 function visibleGames() {
   const query = searchInput.value.toLowerCase().trim();
-  return games.filter((game) => {
-    const searchable = `${game.title} ${game.type} ${game.meta} ${game.description || ''}`.toLowerCase();
-    return (activeFilter === 'all' || game.type === activeFilter) && searchable.includes(query);
-  });
+  return games.filter((game) => { const searchable = `${game.title} ${game.type} ${game.meta} ${game.description || ''}`.toLowerCase(); return (activeFilter === 'all' || game.type === activeFilter) && searchable.includes(query); });
 }
 
 function renderGames() {
   const visible = visibleGames();
-  grid.innerHTML = visible.map((game, index) => `
-    <article class="game-card" style="animation-delay: ${index * 45}ms" data-game-id="${escapeHtml(game.id || game.title)}" tabindex="0" role="button" aria-label="Play ${escapeHtml(game.title)}">
-      <div class="game-cover"><span class="cover-symbol">${escapeHtml(game.symbol || '✦')}</span></div>
-      <div class="card-info"><div><h3>${escapeHtml(game.title)}</h3><p class="card-meta">${escapeHtml(game.meta || game.type || 'GAME')}</p></div><span class="play-link">↗</span></div>
-    </article>
-  `).join('');
+  grid.innerHTML = visible.map((game, index) => `<article class="game-card" style="animation-delay: ${index * 45}ms" data-game-id="${escapeHtml(game.id || game.title)}" tabindex="0" role="button" aria-label="Play ${escapeHtml(game.title)}"><div class="game-cover"><span class="cover-symbol">${escapeHtml(game.symbol || '✦')}</span></div><div class="card-info"><div><h3>${escapeHtml(game.title)}</h3><p class="card-meta">${escapeHtml(game.meta || game.type || 'GAME')}</p></div><span class="play-link">↗</span></div></article>`).join('');
   count.textContent = `${String(visible.length).padStart(2, '0')} / ${games.length} GAMES`;
   emptyState.hidden = visible.length > 0;
 }
@@ -177,11 +141,7 @@ function showToast(message, duration = 2200) {
   showToast.timeout = window.setTimeout(() => toast.classList.remove('show'), duration);
 }
 
-function launchGame(game) {
-  if (game.url) openGame(game);
-  else showToast(`${game.title} is warming up...`);
-}
-
+function launchGame(game) { if (game.url) openGame(game); else showToast(`${game.title} is warming up...`); }
 function handleCard(event) {
   const card = event.target.closest('.game-card');
   if (!card) return;
@@ -194,12 +154,7 @@ function handleCard(event) {
 grid.addEventListener('click', handleCard);
 grid.addEventListener('keydown', handleCard);
 searchInput.addEventListener('input', renderGames);
-document.querySelector('#randomButton').addEventListener('click', () => {
-  const pool = visibleGames();
-  if (!pool.length) return showToast('No games match those filters.');
-  const game = pool[Math.floor(Math.random() * pool.length)];
-  showToast(`Try ${game.title} — ${(game.meta || game.type || 'game').toLowerCase()}`, 2600);
-});
+document.querySelector('#randomButton').addEventListener('click', () => { const pool = visibleGames(); if (!pool.length) return showToast('No games match those filters.'); const game = pool[Math.floor(Math.random() * pool.length)]; showToast(`Try ${game.title} — ${(game.meta || game.type || 'game').toLowerCase()}`, 2600); });
 
 renderFilters();
 renderGames();
