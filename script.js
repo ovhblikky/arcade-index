@@ -22,7 +22,8 @@ const games = [
   { id: 'wordle-daily', title: 'Wordle', type: 'word', meta: 'DAILY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' },
   { id: 'flappy-bird', title: 'Flappy Bird', type: 'quick', meta: 'ARCADE / 03 MIN', symbol: '🐦', url: 'https://flappybirdonline.gitlab.io/file/' },
   { id: 'solitairey', title: 'Solitairey', type: 'chill', meta: 'CARD GAME / 15 MIN', symbol: '♠', url: 'https://foss-card-games.github.io/Solitairey/' },
-  { id: 'neal-fun', title: 'Neal.fun', type: 'chill', meta: 'ODD / FUN / EXPLORE', symbol: '✦', url: 'https://neal.fun/' }
+  { id: 'neal-fun', title: 'Neal.fun', type: 'chill', meta: 'ODD / FUN / EXPLORE', symbol: '✦', url: 'https://neal.fun/' },
+  { id: 'granny', title: 'Granny', type: 'challenge', meta: 'HORROR / 10 MIN', symbol: '👵', url: 'https://db.duckmath.org/html/granny/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
