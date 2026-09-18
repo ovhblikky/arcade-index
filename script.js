@@ -35,8 +35,72 @@ const toast = document.querySelector('#toast');
 let activeFilter = 'all';
 let previouslyFocused;
 
+const suggestionForm = document.querySelector('#suggestionForm');
+const suggestionList = document.querySelector('#suggestionList');
+const suggestionTitle = document.querySelector('#suggestionTitle');
+const suggestionUrl = document.querySelector('#suggestionUrl');
+const suggestionNote = document.querySelector('#suggestionNote');
+const suggestionStorageKey = 'arcade-index-suggestions';
+
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const labelForType = (type) => type.replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+function readSuggestions() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(suggestionStorageKey) || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveSuggestions(suggestions) {
+  localStorage.setItem(suggestionStorageKey, JSON.stringify(suggestions));
+}
+
+function renderSuggestions() {
+  const suggestions = readSuggestions();
+  if (!suggestions.length) {
+    suggestionList.innerHTML = '<li class="empty-suggestions">No suggestions yet. Drop your weirdest find below.</li>';
+    return;
+  }
+
+  suggestionList.innerHTML = suggestions.slice(0, 6).map((suggestion) => `
+    <li class="suggestion-item">
+      <strong>${escapeHtml(suggestion.title)}</strong>
+      <a href="${escapeHtml(suggestion.url)}" target="_blank" rel="noreferrer">${escapeHtml(suggestion.url)}</a>
+      ${suggestion.note ? `<p>${escapeHtml(suggestion.note)}</p>` : ''}
+    </li>
+  `).join('');
+}
+
+function addSuggestion(event) {
+  event.preventDefault();
+
+  const title = suggestionTitle.value.trim();
+  const url = suggestionUrl.value.trim();
+  const note = suggestionNote.value.trim();
+
+  if (!title || !url) {
+    showToast('Add a title and a link first.');
+    return;
+  }
+
+  try {
+    const validUrl = new URL(url);
+    if (!validUrl.protocol.startsWith('http')) throw new Error('Bad protocol');
+  } catch {
+    showToast('That URL looks invalid.');
+    return;
+  }
+
+  const suggestions = readSuggestions();
+  suggestions.unshift({ title, url, note });
+  saveSuggestions(suggestions.slice(0, 6));
+  suggestionForm.reset();
+  renderSuggestions();
+  showToast('Suggestion added.');
+}
 
 function addGameModal() {
   const style = document.createElement('style');
@@ -54,16 +118,123 @@ const gameModalTitle = gameModal.querySelector('#gameModalTitle');
 const gameModalMeta = gameModal.querySelector('#gameModalMeta');
 const fullscreenGameButton = gameModal.querySelector('.game-modal-fullscreen');
 const closeGameButton = gameModal.querySelector('.game-modal-close');
-function updateFullscreenButton() { const isFullscreen = document.fullscreenElement === gamePanel; fullscreenGameButton.title = isFullscreen ? 'Exit full screen' : 'Enter full screen'; fullscreenGameButton.setAttribute('aria-label', isFullscreen ? 'Exit full screen' : 'Enter full screen'); }
-async function toggleGameFullscreen() { try { if (document.fullscreenElement === gamePanel) await document.exitFullscreen(); else if (gamePanel.requestFullscreen) await gamePanel.requestFullscreen(); else showToast('Full screen is not supported in this browser.'); } catch { showToast('Full screen was blocked by the browser.'); } }
-function closeGame() { if (document.fullscreenElement === gamePanel) document.exitFullscreen().catch(() => {}); gameModal.classList.remove('is-open'); gameModal.setAttribute('aria-hidden', 'true'); gameFrame.src = 'about:blank'; if (previouslyFocused) previouslyFocused.focus(); }
-function openGame(game) { previouslyFocused = document.activeElement; gameModalTitle.textContent = game.title; gameModalMeta.textContent = game.meta || game.type || 'GAME'; gameFrame.title = `${game.title} game`; gameFrame.src = game.url; gameModal.classList.add('is-open'); gameModal.removeAttribute('aria-hidden'); closeGameButton.focus(); updateFullscreenButton(); }
-fullscreenGameButton.addEventListener('click', toggleGameFullscreen); document.addEventListener('fullscreenchange', updateFullscreenButton); closeGameButton.addEventListener('click', closeGame); gameModal.addEventListener('click', (event) => { if (event.target === gameModal) closeGame(); }); document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame(); });
-function renderFilters() { const types = [...new Set(games.map((game) => game.type).filter(Boolean))]; const filters = ['all', ...types]; if (!filters.includes(activeFilter)) activeFilter = 'all'; filterTabs.innerHTML = filters.map((type) => `<button class="filter${type === activeFilter ? ' active' : ''}" data-filter="${escapeHtml(type)}" role="tab" aria-selected="${type === activeFilter}">${type === 'all' ? 'All games' : escapeHtml(labelForType(type))}</button>`).join(''); filterTabs.querySelectorAll('.filter').forEach((button) => button.addEventListener('click', () => { activeFilter = button.dataset.filter; renderFilters(); renderGames(); })); }
-function visibleGames() { const query = searchInput.value.toLowerCase().trim(); return games.filter((game) => { const searchable = `${game.title} ${game.type} ${game.meta} ${game.description || ''}`.toLowerCase(); return (activeFilter === 'all' || game.type === activeFilter) && searchable.includes(query); }); }
-function renderGames() { const visible = visibleGames(); grid.innerHTML = visible.map((game, index) => `<article class="game-card" style="animation-delay: ${index * 45}ms" data-game-id="${escapeHtml(game.id || game.title)}" tabindex="0" role="button" aria-label="Play ${escapeHtml(game.title)}"><div class="game-cover"><span class="cover-symbol">${escapeHtml(game.symbol || '✦')}</span></div><div class="card-info"><div><h3>${escapeHtml(game.title)}</h3><p class="card-meta">${escapeHtml(game.meta || game.type || 'GAME')}</p></div><span class="play-link">↗</span></div></article>`).join(''); count.textContent = `${String(visible.length).padStart(2, '0')} / ${games.length} GAMES`; emptyState.hidden = visible.length > 0; }
-function showToast(message, duration = 2200) { toast.textContent = message; toast.classList.add('show'); window.clearTimeout(showToast.timeout); showToast.timeout = window.setTimeout(() => toast.classList.remove('show'), duration); }
-function launchGame(game) { if (game.url) openGame(game); else showToast(`${game.title} is warming up...`); }
-function handleCard(event) { const card = event.target.closest('.game-card'); if (!card) return; if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return; event.preventDefault(); const game = games.find((item) => String(item.id || item.title) === card.dataset.gameId); if (game) launchGame(game); }
-grid.addEventListener('click', handleCard); grid.addEventListener('keydown', handleCard); searchInput.addEventListener('input', renderGames); document.querySelector('#randomButton').addEventListener('click', () => { const pool = visibleGames(); if (!pool.length) return showToast('No games match those filters.'); const game = pool[Math.floor(Math.random() * pool.length)]; showToast(`Try ${game.title} — ${(game.meta || game.type || 'game').toLowerCase()}`, 2600); });
-renderFilters(); renderGames();
+
+function updateFullscreenButton() {
+  const isFullscreen = document.fullscreenElement === gamePanel;
+  fullscreenGameButton.title = isFullscreen ? 'Exit full screen' : 'Enter full screen';
+  fullscreenGameButton.setAttribute('aria-label', isFullscreen ? 'Exit full screen' : 'Enter full screen');
+}
+
+async function toggleGameFullscreen() {
+  try {
+    if (document.fullscreenElement === gamePanel) await document.exitFullscreen();
+    else if (gamePanel.requestFullscreen) await gamePanel.requestFullscreen();
+    else showToast('Full screen is not supported in this browser.');
+  } catch {
+    showToast('Full screen was blocked by the browser.');
+  }
+}
+
+function closeGame() {
+  if (document.fullscreenElement === gamePanel) document.exitFullscreen().catch(() => {});
+  gameModal.classList.remove('is-open');
+  gameModal.setAttribute('aria-hidden', 'true');
+  gameFrame.src = 'about:blank';
+  if (previouslyFocused) previouslyFocused.focus();
+}
+
+function openGame(game) {
+  previouslyFocused = document.activeElement;
+  gameModalTitle.textContent = game.title;
+  gameModalMeta.textContent = game.meta || game.type || 'GAME';
+  gameFrame.title = `${game.title} game`;
+  gameFrame.src = game.url;
+  gameModal.classList.add('is-open');
+  gameModal.removeAttribute('aria-hidden');
+  closeGameButton.focus();
+  updateFullscreenButton();
+}
+
+fullscreenGameButton.addEventListener('click', toggleGameFullscreen);
+document.addEventListener('fullscreenchange', updateFullscreenButton);
+closeGameButton.addEventListener('click', closeGame);
+gameModal.addEventListener('click', (event) => {
+  if (event.target === gameModal) closeGame();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame();
+});
+
+function renderFilters() {
+  const types = [...new Set(games.map((game) => game.type).filter(Boolean))];
+  const filters = ['all', ...types];
+  if (!filters.includes(activeFilter)) activeFilter = 'all';
+  filterTabs.innerHTML = filters.map((type) => `
+    <button class="filter${type === activeFilter ? ' active' : ''}" data-filter="${escapeHtml(type)}" role="tab" aria-selected="${type === activeFilter}">
+      ${type === 'all' ? 'All games' : escapeHtml(labelForType(type))}
+    </button>
+  `).join('');
+  filterTabs.querySelectorAll('.filter').forEach((button) => {
+    button.addEventListener('click', () => {
+      activeFilter = button.dataset.filter;
+      renderFilters();
+      renderGames();
+    });
+  });
+}
+
+function visibleGames() {
+  const query = searchInput.value.toLowerCase().trim();
+  return games.filter((game) => {
+    const searchable = `${game.title} ${game.type} ${game.meta} ${game.description || ''}`.toLowerCase();
+    return (activeFilter === 'all' || game.type === activeFilter) && searchable.includes(query);
+  });
+}
+
+function renderGames() {
+  const visible = visibleGames();
+  grid.innerHTML = visible.map((game, index) => `
+    <article class="game-card" style="animation-delay: ${index * 45}ms" data-game-id="${escapeHtml(game.id || game.title)}" tabindex="0" role="button" aria-label="Play ${escapeHtml(game.title)}">
+      <div class="game-cover"><span class="cover-symbol">${escapeHtml(game.symbol || '✦')}</span></div>
+      <div class="card-info"><div><h3>${escapeHtml(game.title)}</h3><p class="card-meta">${escapeHtml(game.meta || game.type || 'GAME')}</p></div><span class="play-link">↗</span></div>
+    </article>
+  `).join('');
+  count.textContent = `${String(visible.length).padStart(2, '0')} / ${games.length} GAMES`;
+  emptyState.hidden = visible.length > 0;
+}
+
+function showToast(message, duration = 2200) {
+  toast.textContent = message;
+  toast.classList.add('show');
+  window.clearTimeout(showToast.timeout);
+  showToast.timeout = window.setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+function launchGame(game) {
+  if (game.url) openGame(game);
+  else showToast(`${game.title} is warming up...`);
+}
+
+function handleCard(event) {
+  const card = event.target.closest('.game-card');
+  if (!card) return;
+  if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  const game = games.find((item) => String(item.id || item.title) === card.dataset.gameId);
+  if (game) launchGame(game);
+}
+
+suggestionForm.addEventListener('submit', addSuggestion);
+renderSuggestions();
+grid.addEventListener('click', handleCard);
+grid.addEventListener('keydown', handleCard);
+searchInput.addEventListener('input', renderGames);
+document.querySelector('#randomButton').addEventListener('click', () => {
+  const pool = visibleGames();
+  if (!pool.length) return showToast('No games match those filters.');
+  const game = pool[Math.floor(Math.random() * pool.length)];
+  showToast(`Try ${game.title} — ${(game.meta || game.type || 'game').toLowerCase()}`, 2600);
+});
+
+renderFilters();
+renderGames();
