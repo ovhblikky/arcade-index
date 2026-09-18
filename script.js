@@ -24,12 +24,79 @@ const searchInput = document.querySelector('#searchInput');
 const filterTabs = document.querySelector('#filterTabs');
 const toast = document.querySelector('#toast');
 let activeFilter = 'all';
+let previouslyFocused;
 
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[character]));
 
 const labelForType = (type) => type.replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+function addGameModal() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .game-modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 24px; background: rgba(23,23,23,.78); opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s ease; }
+    .game-modal.is-open { opacity: 1; visibility: visible; }
+    .game-modal-panel { width: min(1100px, 100%); height: min(760px, 92vh); display: flex; flex-direction: column; background: var(--paper); box-shadow: 8px 8px 0 var(--ink); transform: translateY(14px); transition: transform .2s ease; }
+    .game-modal.is-open .game-modal-panel { transform: none; }
+    .game-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; padding: 10px 16px 10px 20px; border-bottom: 1px solid var(--line); }
+    .game-modal-title { margin: 0; font-size: 16px; font-weight: 500; }
+    .game-modal-meta { margin: 4px 0 0; color: var(--muted); font: 10px var(--mono); }
+    .game-modal-close { width: 34px; height: 34px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-size: 22px; line-height: 1; }
+    .game-modal-close:hover, .game-modal-close:focus-visible { background: var(--ink); color: var(--paper); }
+    .game-modal-frame { flex: 1; width: 100%; min-height: 0; border: 0; background: #fff; }
+    @media (max-width: 600px) { .game-modal { padding: 10px; } .game-modal-panel { height: 94vh; box-shadow: 4px 4px 0 var(--ink); } }
+  `;
+  document.head.append(style);
+  const modal = document.createElement('div');
+  modal.className = 'game-modal';
+  modal.id = 'gameModal';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'gameModalTitle');
+  modal.innerHTML = `
+    <div class="game-modal-panel" role="document">
+      <header class="game-modal-header">
+        <div><h2 class="game-modal-title" id="gameModalTitle"></h2><p class="game-modal-meta" id="gameModalMeta"></p></div>
+        <button class="game-modal-close" type="button" aria-label="Close game">×</button>
+      </header>
+      <iframe class="game-modal-frame" id="gameModalFrame" title="Game" allow="fullscreen; gamepad" referrerpolicy="no-referrer"></iframe>
+    </div>`;
+  document.body.append(modal);
+  return modal;
+}
+
+const gameModal = addGameModal();
+const gameFrame = gameModal.querySelector('#gameModalFrame');
+const gameModalTitle = gameModal.querySelector('#gameModalTitle');
+const gameModalMeta = gameModal.querySelector('#gameModalMeta');
+const closeGameButton = gameModal.querySelector('.game-modal-close');
+
+function closeGame() {
+  gameModal.classList.remove('is-open');
+  gameModal.setAttribute('aria-hidden', 'true');
+  gameFrame.src = 'about:blank';
+  if (previouslyFocused) previouslyFocused.focus();
+}
+
+function openGame(game) {
+  previouslyFocused = document.activeElement;
+  gameModalTitle.textContent = game.title;
+  gameModalMeta.textContent = game.meta || game.type || 'GAME';
+  gameFrame.title = `${game.title} game`;
+  gameFrame.src = game.url;
+  gameModal.classList.add('is-open');
+  gameModal.removeAttribute('aria-hidden');
+  closeGameButton.focus();
+}
+
+closeGameButton.addEventListener('click', closeGame);
+gameModal.addEventListener('click', (event) => {
+  if (event.target === gameModal) closeGame();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && gameModal.classList.contains('is-open')) closeGame();
+});
 
 function renderFilters() {
   const types = [...new Set(games.map((game) => game.type).filter(Boolean))];
@@ -78,7 +145,7 @@ function showToast(message, duration = 2200) {
 
 function launchGame(game) {
   if (game.url) {
-    window.open(game.url, '_blank', 'noopener');
+    openGame(game);
     return;
   }
   showToast(`${game.title} is warming up...`);
