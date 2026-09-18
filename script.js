@@ -14,7 +14,7 @@ const games = [
   { id: 'gridlock', title: 'Gridlock', type: 'challenge', meta: 'LOGIC / 11 MIN', symbol: '▦' },
   { id: 'pong-again', title: 'Pong Again', type: 'quick', meta: 'ARCADE / 02 MIN', symbol: '│' },
   { id: 'retro-bowl', title: 'Retro Bowl', type: 'sports', meta: 'AMERICAN FOOTBALL / 10 MIN', symbol: '🏈', url: 'https://retro-bowl-unbl0cked.github.io/' },
-  { id: 'subway-surfers', title: 'Subway Surfers', type: 'runner', meta: 'ENDLESS RUNNER / 05 MIN', symbol: '🚇', url: 'https://subwaysurfers76.github.io/' },
+  { id: 'subway-surfers', title: 'Subway Surfers', type: 'runner', meta: 'ENDLESS RUNNER / 05 MIN', symbol: '🚇', url: 'https://files.gamezhero.com/game/905/1d1/9051d1173be765fb/data/index.html' },
   { id: 'moto-x3m', title: 'Moto X3M', type: 'racing', meta: 'BIKE / 10 MIN', symbol: '🏍️', url: 'https://moto-x3mgame.github.io/a8/moto-x3m/' },
   { id: 'slow-roads', title: 'Slow Roads', type: 'chill', meta: 'DRIVING / 20 MIN', symbol: '〰', url: 'https://slowroads.io/' },
   { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' }
@@ -85,20 +85,15 @@ const closeGameButton = gameModal.querySelector('.game-modal-close');
 
 function updateFullscreenButton() {
   const isFullscreen = document.fullscreenElement === gamePanel;
-  fullscreenGameButton.textContent = isFullscreen ? '⛶' : '⛶';
   fullscreenGameButton.title = isFullscreen ? 'Exit full screen' : 'Enter full screen';
   fullscreenGameButton.setAttribute('aria-label', isFullscreen ? 'Exit full screen' : 'Enter full screen');
 }
 
 async function toggleGameFullscreen() {
   try {
-    if (document.fullscreenElement === gamePanel) {
-      await document.exitFullscreen();
-    } else if (gamePanel.requestFullscreen) {
-      await gamePanel.requestFullscreen();
-    } else {
-      showToast('Full screen is not supported in this browser.');
-    }
+    if (document.fullscreenElement === gamePanel) await document.exitFullscreen();
+    else if (gamePanel.requestFullscreen) await gamePanel.requestFullscreen();
+    else showToast('Full screen is not supported in this browser.');
   } catch {
     showToast('Full screen was blocked by the browser.');
   }
@@ -180,11 +175,8 @@ function showToast(message, duration = 2200) {
 }
 
 function launchGame(game) {
-  if (game.url) {
-    openGame(game);
-    return;
-  }
-  showToast(`${game.title} is warming up...`);
+  if (game.url) openGame(game);
+  else showToast(`${game.title} is warming up...`);
 }
 
 function handleCard(event) {
