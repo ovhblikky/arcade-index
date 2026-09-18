@@ -19,7 +19,8 @@ const games = [
   { id: 'slow-roads', title: 'Slow Roads', type: 'chill', meta: 'DRIVING / 20 MIN', symbol: '〰', url: 'https://slowroads.io/' },
   { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' },
   { id: 'eaglercraft', title: 'Eaglercraft', type: 'sandbox', meta: 'BUILDING / LONG PLAY', symbol: '▣', url: 'https://eaglercraftnew-mc.vercel.app/' },
-  { id: 'wordle-daily', title: 'Wordle', type: 'word', meta: 'DAILY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' }
+  { id: 'wordle-daily', title: 'Wordle', type: 'word', meta: 'DAILY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' },
+  { id: 'flappy-bird', title: 'Flappy Bird', type: 'quick', meta: 'ARCADE / 03 MIN', symbol: '🐦', url: 'https://flappybirdonline.gitlab.io/file/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
