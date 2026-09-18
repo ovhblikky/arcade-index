@@ -14,7 +14,10 @@ const games = [
   { id: 'gridlock', title: 'Gridlock', type: 'challenge', meta: 'LOGIC / 11 MIN', symbol: '▦' },
   { id: 'pong-again', title: 'Pong Again', type: 'quick', meta: 'ARCADE / 02 MIN', symbol: '│' },
   { id: 'retro-bowl', title: 'Retro Bowl', type: 'sports', meta: 'AMERICAN FOOTBALL / 10 MIN', symbol: '🏈', url: 'https://retro-bowl-unbl0cked.github.io/' },
-  { id: 'subway-surfers', title: 'Subway Surfers', type: 'runner', meta: 'ENDLESS RUNNER / 05 MIN', symbol: '🚇', url: 'https://subwaysurfers76.github.io/' }
+  { id: 'subway-surfers', title: 'Subway Surfers', type: 'runner', meta: 'ENDLESS RUNNER / 05 MIN', symbol: '🚇', url: 'https://subwaysurfers76.github.io/' },
+  { id: 'moto-x3m', title: 'Moto X3M', type: 'racing', meta: 'BIKE / 10 MIN', symbol: '🏍️', url: 'https://moto3xmbike.github.io/' },
+  { id: 'infinite-craft', title: 'Infinite Craft', type: 'chill', meta: 'CREATION / 20 MIN', symbol: '∞', url: 'https://neal.fun/infinite-craft/' },
+  { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
