@@ -24,7 +24,9 @@ const games = [
   { id: 'solitairey', title: 'Solitairey', type: 'chill', meta: 'CARD GAME / 15 MIN', symbol: '♠', url: 'https://foss-card-games.github.io/Solitairey/' },
   { id: 'neal-fun', title: "That's Not My Neighbor", type: 'challenge', meta: 'HORROR / 15 MIN', symbol: '🚪', url: 'https://thatsnotmyneighbor.online/v11/' },
   { id: 'granny', title: 'Granny', type: 'challenge', meta: 'HORROR / 10 MIN', symbol: '👵', url: 'https://db.duckmath.org/html/granny/' },
-  { id: 'ultrakill-prelude', title: 'Ultrakill Prelude', type: 'challenge', meta: 'SHOOTER / 12 MIN', symbol: '☠', url: 'https://html5.gdata1.com/ULTRAKILL%20Prelude/?v=20250827221755' }
+  { id: 'ultrakill-prelude', title: 'Ultrakill Prelude', type: 'challenge', meta: 'SHOOTER / 12 MIN', symbol: '☠', url: 'https://html5.gdata1.com/ULTRAKILL%20Prelude/?v=20250827221755' },
+  { id: 'house-of-hazards', title: 'House of Hazards', type: 'challenge', meta: 'PARTY / 10 MIN', symbol: '🏠', url: 'https://houseofhazards.com/' },
+  { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
