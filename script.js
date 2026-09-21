@@ -19,15 +19,16 @@ const games = [
   { id: 'slow-roads', title: 'Slow Roads', type: 'chill', meta: 'DRIVING / 20 MIN', symbol: '〰', url: 'https://slowroads.io/' },
   { id: 'the-wiki-game', title: 'The Wiki Game', type: 'challenge', meta: 'TRIVIA / 08 MIN', symbol: 'W', url: 'https://www.thewikigame.com/' },
   { id: 'eaglercraft', title: 'Eaglercraft', type: 'sandbox', meta: 'BUILDING / LONG PLAY', symbol: '▣', url: 'https://eaglercraftnew-mc.vercel.app/' },
-  { id: 'wordle-hourly', title: 'Wordle', type: 'word', meta: 'HOURLY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' },
+  { id: 'wordle-daily', title: 'Wordle', type: 'word', meta: 'DAILY / 05 MIN', symbol: 'W', url: 'https://mikhad.github.io/wordle/#daily' },
   { id: 'flappy-bird', title: 'Flappy Bird', type: 'quick', meta: 'ARCADE / 03 MIN', symbol: '🐦', url: 'https://flappybirdonline.gitlab.io/file/' },
   { id: 'solitairey', title: 'Solitairey', type: 'chill', meta: 'CARD GAME / 15 MIN', symbol: '♠', url: 'https://foss-card-games.github.io/Solitairey/' },
-  { id: 'thats-not-my-neighbor', title: "That's Not My Neighbor", type: 'challenge', meta: 'HORROR / 15 MIN', symbol: '🚪', url: 'https://thatsnotmyneighbor.online/v11/' },
+  { id: 'neal-fun', title: "That's Not My Neighbor", type: 'challenge', meta: 'HORROR / 15 MIN', symbol: '🚪', url: 'https://thatsnotmyneighbor.online/v11/' },
   { id: 'granny', title: 'Granny', type: 'challenge', meta: 'HORROR / 10 MIN', symbol: '👵', url: 'https://db.duckmath.org/html/granny/' },
   { id: 'ultrakill-prelude', title: 'Ultrakill Prelude', type: 'challenge', meta: 'SHOOTER / 12 MIN', symbol: '☠', url: 'https://html5.gdata1.com/ULTRAKILL%20Prelude/?v=20250827221755' },
   { id: 'house-of-hazards', title: 'House of Hazards', type: 'challenge', meta: 'PARTY / 10 MIN', symbol: '🏠', url: 'https://houseofhazards.com/' },
   { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' },
-  { id: 'mortal-kombat-trilogy', title: 'Mortal Kombat Trilogy', type: 'fighting', meta: 'FIGHTING / 15 MIN', symbol: '⚔', url: 'https://classicjoy.games/embed?slug=mortal-kombat-trilogy&internal=1' }
+  { id: 'mortal-kombat-trilogy', title: 'Mortal Kombat Trilogy', type: 'fighting', meta: 'FIGHTING / 15 MIN', symbol: '⚔', url: 'https://classicjoy.games/embed?slug=mortal-kombat-trilogy&internal=1' },
+  { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://polytrack.gg/polytrack/?p=0' }
 ];
 
 const grid = document.querySelector('#gameGrid');
