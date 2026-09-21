@@ -28,7 +28,8 @@ const games = [
   { id: 'house-of-hazards', title: 'House of Hazards', type: 'challenge', meta: 'PARTY / 10 MIN', symbol: '🏠', url: 'https://houseofhazards.com/' },
   { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' },
   { id: 'mortal-kombat-trilogy', title: 'Mortal Kombat Trilogy', type: 'fighting', meta: 'FIGHTING / 15 MIN', symbol: '⚔', url: 'https://classicjoy.games/embed?slug=mortal-kombat-trilogy&internal=1' },
-  { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://gr4ys0n.github.io/public/assets/games/poly-track/index.html' }
+  { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://gr4ys0n.github.io/public/assets/games/poly-track/index.html' },
+  { id: 'soccer-skills-world-cup', title: 'Soccer Skills World Cup', type: 'sports', meta: 'SOCCER / 10 MIN', symbol: '⚽', url: 'https://classroom8.github.io/soccer-skills-world-cup/#topvaz' }
 ];
 
 const grid = document.querySelector('#gameGrid');
