@@ -28,7 +28,7 @@ const games = [
   { id: 'house-of-hazards', title: 'House of Hazards', type: 'challenge', meta: 'PARTY / 10 MIN', symbol: '🏠', url: 'https://houseofhazards.com/' },
   { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' },
   { id: 'mortal-kombat-trilogy', title: 'Mortal Kombat Trilogy', type: 'fighting', meta: 'FIGHTING / 15 MIN', symbol: '⚔', url: 'https://classicjoy.games/embed?slug=mortal-kombat-trilogy&internal=1' },
-  { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://polytrack.gg/polytrack/?p=0' }
+  { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://gr4ys0n.github.io/public/assets/games/poly-track/index.html' }
 ];
 
 const grid = document.querySelector('#gameGrid');
@@ -39,31 +39,14 @@ const filterTabs = document.querySelector('#filterTabs');
 const toast = document.querySelector('#toast');
 let activeFilter = 'all';
 let previouslyFocused;
-
 const suggestionForm = document.querySelector('#suggestionForm');
 const suggestionList = document.querySelector('#suggestionList');
 const suggestionTitle = document.querySelector('#suggestionTitle');
 const suggestionUrl = document.querySelector('#suggestionUrl');
 const suggestionNote = document.querySelector('#suggestionNote');
-const suggestionStorageKey = 'arcade-index-suggestions';
 const suggestionRecipient = '837842@scienceandtech.org';
-
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const labelForType = (type) => type.replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
-
-function readSuggestions() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(suggestionStorageKey) || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch { return []; }
-}
-
-function renderSuggestions() {
-  const suggestions = readSuggestions();
-  suggestionList.innerHTML = suggestions.length
-    ? suggestions.slice(0, 6).map((suggestion) => `<li class="suggestion-item"><strong>${escapeHtml(suggestion.title)}</strong><a href="${escapeHtml(suggestion.url)}" target="_blank" rel="noreferrer">${escapeHtml(suggestion.url)}</a>${suggestion.note ? `<p>${escapeHtml(suggestion.note)}</p>` : ''}</li>`).join('')
-    : '<li class="empty-suggestions">Suggestions are sent by email.</li>';
-}
 
 function addSuggestion(event) {
   event.preventDefault();
@@ -71,11 +54,8 @@ function addSuggestion(event) {
   const url = suggestionUrl.value.trim();
   const note = suggestionNote.value.trim();
   if (!title || !url) return showToast('Add a title and a link first.');
-  try {
-    const validUrl = new URL(url);
-    if (!validUrl.protocol.startsWith('http')) throw new Error('Bad protocol');
-  } catch { return showToast('That URL looks invalid.'); }
-
+  try { const validUrl = new URL(url); if (!validUrl.protocol.startsWith('http')) throw new Error(); }
+  catch { return showToast('That URL looks invalid.'); }
   const subject = `Arcade game suggestion: ${title}`;
   const body = `Game name: ${title}\nLink: ${url}${note ? `\nWhy it fits: ${note}` : ''}`;
   window.location.href = `mailto:${suggestionRecipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -83,6 +63,9 @@ function addSuggestion(event) {
   showToast(`Opening your email app to send to ${suggestionRecipient}.`);
 }
 
+function renderSuggestions() {
+  suggestionList.innerHTML = '<li class="empty-suggestions">Suggestions are sent by email.</li>';
+}
 function addGameModal() {
   const style = document.createElement('style');
   style.textContent = `.game-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:rgba(23,23,23,.78);opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease}.game-modal.is-open{opacity:1;visibility:visible}.game-modal-panel{position:relative;width:min(100%,1100px);height:min(78vh,760px);border-radius:20px;background:#101010;border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden}.game-modal-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}.game-modal-title{margin:0;font-size:clamp(1.1rem,2vw,1.7rem)}.game-modal-meta{margin:4px 0 0;color:#b9b9b9;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase}.game-modal-actions{display:flex;gap:8px}.game-modal-button{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#fff;border-radius:999px;height:36px;width:36px;display:grid;place-items:center;cursor:pointer}.game-modal-frame{display:block;width:100%;height:calc(100% - 74px);border:0;background:#000}@media(max-width:640px){.game-modal-panel{height:70vh}.game-modal-header{padding:12px 14px}}`;
@@ -99,45 +82,15 @@ const gameModalTitle = gameModal.querySelector('#gameModalTitle');
 const gameModalMeta = gameModal.querySelector('#gameModalMeta');
 const fullscreenGameButton = gameModal.querySelector('.game-modal-fullscreen');
 const closeGameButton = gameModal.querySelector('.game-modal-close');
+function updateFullscreenButton() { const isFullscreen = document.fullscreenElement === gamePanel; fullscreenGameButton.title = isFullscreen ? 'Exit full screen' : 'Enter full screen'; fullscreenGameButton.setAttribute('aria-label', fullscreenGameButton.title); }
+async function toggleGameFullscreen() { try { if (document.fullscreenElement === gamePanel) await document.exitFullscreen(); else if (gamePanel.requestFullscreen) await gamePanel.requestFullscreen(); else showToast('Full screen is not supported in this browser.'); } catch { showToast('Full screen was blocked by the browser.'); } }
+function closeGame() { if (document.fullscreenElement === gamePanel) document.exitFullscreen().catch(() => {}); gameModal.classList.remove('is-open'); gameModal.setAttribute('aria-hidden', 'true'); gameFrame.src = 'about:blank'; if (previouslyFocused) previouslyFocused.focus(); }
+function openGame(game) { previouslyFocused = document.activeElement; gameModalTitle.textContent = game.title; gameModalMeta.textContent = game.meta || game.type || 'GAME'; gameFrame.title = `${game.title} game`; gameFrame.src = game.url; gameModal.classList.add('is-open'); gameModal.removeAttribute('aria-hidden'); closeGameButton.focus(); updateFullscreenButton(); }
+fullscreenGameButton.addEventListener('click', toggleGameFullscreen); document.addEventListener('fullscreenchange', updateFullscreenButton); closeGameButton.addEventListener('click', closeGame); gameModal.addEventListener('click', (event) => { if (event.target === gameModal) closeGame(); }); document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame(); });
 
-function updateFullscreenButton() {
-  const isFullscreen = document.fullscreenElement === gamePanel;
-  fullscreenGameButton.title = isFullscreen ? 'Exit full screen' : 'Enter full screen';
-  fullscreenGameButton.setAttribute('aria-label', fullscreenGameButton.title);
-}
-async function toggleGameFullscreen() {
-  try { if (document.fullscreenElement === gamePanel) await document.exitFullscreen(); else if (gamePanel.requestFullscreen) await gamePanel.requestFullscreen(); else showToast('Full screen is not supported in this browser.'); }
-  catch { showToast('Full screen was blocked by the browser.'); }
-}
-function closeGame() {
-  if (document.fullscreenElement === gamePanel) document.exitFullscreen().catch(() => {});
-  gameModal.classList.remove('is-open'); gameModal.setAttribute('aria-hidden', 'true'); gameFrame.src = 'about:blank';
-  if (previouslyFocused) previouslyFocused.focus();
-}
-function openGame(game) {
-  previouslyFocused = document.activeElement; gameModalTitle.textContent = game.title; gameModalMeta.textContent = game.meta || game.type || 'GAME'; gameFrame.title = `${game.title} game`; gameFrame.src = game.url; gameModal.classList.add('is-open'); gameModal.removeAttribute('aria-hidden'); closeGameButton.focus(); updateFullscreenButton();
-}
-fullscreenGameButton.addEventListener('click', toggleGameFullscreen);
-document.addEventListener('fullscreenchange', updateFullscreenButton);
-closeGameButton.addEventListener('click', closeGame);
-gameModal.addEventListener('click', (event) => { if (event.target === gameModal) closeGame(); });
-document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && gameModal.classList.contains('is-open') && !document.fullscreenElement) closeGame(); });
-
-function renderFilters() {
-  const filters = ['all', ...new Set(games.map((game) => game.type).filter(Boolean))];
-  if (!filters.includes(activeFilter)) activeFilter = 'all';
-  filterTabs.innerHTML = filters.map((type) => `<button class="filter${type === activeFilter ? ' active' : ''}" data-filter="${escapeHtml(type)}" role="tab" aria-selected="${type === activeFilter}">${type === 'all' ? 'All games' : escapeHtml(labelForType(type))}</button>`).join('');
-  filterTabs.querySelectorAll('.filter').forEach((button) => button.addEventListener('click', () => { activeFilter = button.dataset.filter; renderFilters(); renderGames(); }));
-}
-function visibleGames() {
-  const query = searchInput.value.toLowerCase().trim();
-  return games.filter((game) => { const searchable = `${game.title} ${game.type} ${game.meta} ${game.description || ''}`.toLowerCase(); return (activeFilter === 'all' || game.type === activeFilter) && searchable.includes(query); });
-}
-function renderGames() {
-  const visible = visibleGames();
-  grid.innerHTML = visible.map((game, index) => `<article class="game-card" style="animation-delay:${index * 45}ms" data-game-id="${escapeHtml(game.id || game.title)}" tabindex="0" role="button" aria-label="Play ${escapeHtml(game.title)}"><div class="game-cover"><span class="cover-symbol">${escapeHtml(game.symbol || '✦')}</span></div><div class="card-info"><div><h3>${escapeHtml(game.title)}</h3><p class="card-meta">${escapeHtml(game.meta || game.type || 'GAME')}</p></div><span class="play-link">↗</span></div></article>`).join('');
-  count.textContent = `${String(visible.length).padStart(2, '0')} / ${games.length} GAMES`; emptyState.hidden = visible.length > 0;
-}
+function renderFilters() { const filters = ['all', ...new Set(games.map((game) => game.type).filter(Boolean))]; if (!filters.includes(activeFilter)) activeFilter = 'all'; filterTabs.innerHTML = filters.map((type) => `<button class="filter${type === activeFilter ? ' active' : ''}" data-filter="${escapeHtml(type)}" role="tab" aria-selected="${type === activeFilter}">${type === 'all' ? 'All games' : escapeHtml(labelForType(type))}</button>`).join(''); filterTabs.querySelectorAll('.filter').forEach((button) => button.addEventListener('click', () => { activeFilter = button.dataset.filter; renderFilters(); renderGames(); })); }
+function visibleGames() { const query = searchInput.value.toLowerCase().trim(); return games.filter((game) => { const searchable = `${game.title} ${game.type} ${game.meta} ${game.description || ''}`.toLowerCase(); return (activeFilter === 'all' || game.type === activeFilter) && searchable.includes(query); }); }
+function renderGames() { const visible = visibleGames(); grid.innerHTML = visible.map((game, index) => `<article class="game-card" style="animation-delay:${index * 45}ms" data-game-id="${escapeHtml(game.id || game.title)}" tabindex="0" role="button" aria-label="Play ${escapeHtml(game.title)}"><div class="game-cover"><span class="cover-symbol">${escapeHtml(game.symbol || '✦')}</span></div><div class="card-info"><div><h3>${escapeHtml(game.title)}</h3><p class="card-meta">${escapeHtml(game.meta || game.type || 'GAME')}</p></div><span class="play-link">↗</span></div></article>`).join(''); count.textContent = `${String(visible.length).padStart(2, '0')} / ${games.length} GAMES`; emptyState.hidden = visible.length > 0; }
 function showToast(message, duration = 2200) { toast.textContent = message; toast.classList.add('show'); clearTimeout(showToast.timeout); showToast.timeout = setTimeout(() => toast.classList.remove('show'), duration); }
 function launchGame(game) { if (game.url) openGame(game); else showToast(`${game.title} is warming up...`); }
 function handleCard(event) { const card = event.target.closest('.game-card'); if (!card || (event.type === 'keydown' && !['Enter', ' '].includes(event.key))) return; event.preventDefault(); const game = games.find((item) => String(item.id || item.title) === card.dataset.gameId); if (game) launchGame(game); }
@@ -145,7 +98,6 @@ function handleCard(event) { const card = event.target.closest('.game-card'); if
 suggestionForm.addEventListener('submit', addSuggestion);
 const suggestionSubmit = suggestionForm.querySelector('.suggestion-submit');
 if (suggestionSubmit) suggestionSubmit.textContent = 'Email the suggestion';
-renderSuggestions();
-grid.addEventListener('click', handleCard); grid.addEventListener('keydown', handleCard); searchInput.addEventListener('input', renderGames);
+renderSuggestions(); grid.addEventListener('click', handleCard); grid.addEventListener('keydown', handleCard); searchInput.addEventListener('input', renderGames);
 document.querySelector('#randomButton').addEventListener('click', () => { const pool = visibleGames(); if (!pool.length) return showToast('No games match those filters.'); const game = pool[Math.floor(Math.random() * pool.length)]; showToast(`Try ${game.title} — ${(game.meta || game.type || 'game').toLowerCase()}`, 2600); });
 renderFilters(); renderGames();
