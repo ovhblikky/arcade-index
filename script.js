@@ -29,7 +29,8 @@ const games = [
   { id: 'uno', title: 'UNO', type: 'card', meta: 'CARD GAME / 10 MIN', symbol: '🃏', url: 'https://uno.guilherr.me/' },
   { id: 'mortal-kombat-trilogy', title: 'Mortal Kombat Trilogy', type: 'fighting', meta: 'FIGHTING / 15 MIN', symbol: '⚔', url: 'https://classicjoy.games/embed?slug=mortal-kombat-trilogy&internal=1' },
   { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://gr4ys0n.github.io/public/assets/games/poly-track/index.html' },
-  { id: 'soccer-skills-world-cup', title: 'Soccer Skills World Cup', type: 'sports', meta: 'SOCCER / 10 MIN', symbol: '⚽', url: 'https://classroom8.github.io/soccer-skills-world-cup/#topvaz' }
+  { id: 'soccer-skills-world-cup', title: 'Soccer Skills World Cup', type: 'sports', meta: 'SOCCER / 10 MIN', symbol: '⚽', url: 'https://classroom8.github.io/soccer-skills-world-cup/#topvaz' },
+  { id: 'race-survival', title: 'Race Survival', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏎️', url: 'https://hooplandgames.com/gg/race-survival/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
