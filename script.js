@@ -31,8 +31,7 @@ const games = [
   { id: 'polytrack', title: 'Polytrack', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏁', url: 'https://gr4ys0n.github.io/public/assets/games/poly-track/index.html' },
   { id: 'soccer-skills-world-cup', title: 'Soccer Skills World Cup', type: 'sports', meta: 'SOCCER / 10 MIN', symbol: '⚽', url: 'https://classroom8.github.io/soccer-skills-world-cup/#topvaz' },
   { id: 'race-survival', title: 'Race Survival', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏎️', url: 'https://hooplandgames.com/gg/race-survival/' },
-  { id: 'cookie-clicker', title: 'Cookie Clicker', type: 'chill', meta: 'CLICKER / LONG PLAY', symbol: '🍪', url: 'https://cookieclickerorteil.github.io/' },
-  { id: 'cod-zombies', title: 'COD: Zombies', type: 'challenge', meta: 'SHOOTER / LONG PLAY', symbol: '🧟', url: 'https://vel.gg/bo1z/' }
+  { id: 'cookie-clicker', title: 'Cookie Clicker', type: 'chill', meta: 'CLICKER / LONG PLAY', symbol: '🍪', url: 'https://cookieclickerorteil.github.io/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
