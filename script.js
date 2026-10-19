@@ -32,7 +32,8 @@ const games = [
   { id: 'soccer-skills-world-cup', title: 'Soccer Skills World Cup', type: 'sports', meta: 'SOCCER / 10 MIN', symbol: '⚽', url: 'https://classroom8.github.io/soccer-skills-world-cup/#topvaz' },
   { id: 'race-survival', title: 'Race Survival', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏎️', url: 'https://hooplandgames.com/gg/race-survival/' },
   { id: 'cookie-clicker', title: 'Cookie Clicker', type: 'chill', meta: 'CLICKER / LONG PLAY', symbol: '🍪', url: 'https://cookieclickerorteil.github.io/' },
-  { id: 'call-of-duty-zombies', title: 'Call of Duty Zombies', type: 'shooting', meta: 'SHOOTER / LONG PLAY', symbol: '☠', url: 'https://vel.gg/bo1z/' }
+  { id: 'call-of-duty-zombies', title: 'Call of Duty Zombies', type: 'shooting', meta: 'SHOOTER / LONG PLAY', symbol: '☠', url: 'https://vel.gg/bo1z/' },
+  { id: 'tiny-trenches', title: 'Tiny Trenches', type: 'strategy', meta: 'TOWER DEFENSE / 10 MIN', symbol: '🛡️', url: 'https://dubiousrooster.itch.io/tiny-trenches' }
 ];
 
 const grid = document.querySelector('#gameGrid');
