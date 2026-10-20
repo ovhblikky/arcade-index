@@ -33,7 +33,7 @@ const games = [
   { id: 'race-survival', title: 'Race Survival', type: 'racing', meta: 'RACING / 10 MIN', symbol: '🏎️', url: 'https://hooplandgames.com/gg/race-survival/' },
   { id: 'cookie-clicker', title: 'Cookie Clicker', type: 'chill', meta: 'CLICKER / LONG PLAY', symbol: '🍪', url: 'https://cookieclickerorteil.github.io/' },
   { id: 'call-of-duty-zombies', title: 'Call of Duty Zombies', type: 'shooting', meta: 'SHOOTER / LONG PLAY', symbol: '☠', url: 'https://vel.gg/bo1z/' },
-  { id: 'tiny-trenches', title: 'Tiny Trenches', type: 'strategy', meta: 'TOWER DEFENSE / 10 MIN', symbol: '🛡️', url: 'https://html-classic.itch.zone/html/13792690/index.html/' }
+  { id: 'tiny-trenches', title: 'Tiny Trenches', type: 'strategy', meta: 'TOWER DEFENSE / 10 MIN', symbol: '🛡️', url: 'https://dubiousrooster.itch.io/tiny-trenches/' }
 ];
 
 const grid = document.querySelector('#gameGrid');
